@@ -1,11 +1,76 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IA Portal | Officer's Voice</title><style>
-*{box-sizing:border-box}body{margin:0;background:#f3f6fb;color:#182338;font-family:system-ui,Segoe UI,sans-serif}.top{background:#101d31;color:white;padding:24px}.wrap{max-width:1000px;margin:28px auto;padding:0 16px}.card{background:white;border:1px solid #dce4ef;border-radius:14px;padding:20px;margin-bottom:16px}input,button{font:inherit;padding:11px;border-radius:9px;border:1px solid #d6dfeb}input{display:block;width:100%;margin:8px 0 12px}button{background:#2f6fed;color:white;border:0;cursor:pointer}button.secondary{background:#536176}.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.muted{color:#68758a;font-size:13px}.entry{border-top:1px solid #e5eaf1;padding:15px 0}.entry h3{margin:0 0 8px}.entry p{white-space:pre-wrap;margin:5px 0}.error{color:#b42318}.tag{font-size:11px;background:#edf2fa;border-radius:20px;padding:4px 8px}.portal-link{color:#d5e2f3;font-size:13px}.report-toggle{min-height:52px;padding:14px 20px;font-size:16px;font-weight:750;box-shadow:0 5px 14px #2f6fed30}.access-denied{border-left:4px solid #b42318}</style></head><body>
-<header class="top"><strong>LOS SANTOS POLICE DEPARTMENT · INTERNAL AFFAIRS</strong><div>OFFICER'S VOICE — IA PORTAL</div></header><main class="wrap">
-<section class="card" id="login"><h2>IA Sign In</h2><p class="muted">Gunakan akun petugas IA yang dibuat oleh administrator Firebase. Pendaftaran publik tidak tersedia.</p><label for="email">Email</label><input id="email" type="email" autocomplete="username"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password"><button id="loginBtn">Login</button><p class="error" id="loginError" role="alert"></p><p><a class="portal-link" href="index.html">Kembali ke formulir</a></p></section>
-<section class="card access-denied" id="accessDenied" hidden><h2>Akses IA diperlukan</h2><p class="muted">Akun ini tidak termasuk dalam daftar petugas IA yang diizinkan membaca laporan.</p><button class="secondary" id="deniedLogoutBtn" type="button">Logout</button></section>
-<section class="card" id="dashboard" hidden><div class="row"><div><h2>Officer Voice Responses</h2><p class="muted" id="signedInAs">Akses khusus petugas IA.</p></div><div class="row"><button class="report-toggle" id="toggleReports" type="button" aria-expanded="false" aria-controls="entries">Tampilkan laporan</button><button class="secondary" id="logoutBtn" type="button">Logout</button></div></div><div id="entries" hidden></div></section>
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IA Portal | Officer's Voice</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f6fb;color:#182338;font-family:system-ui,Segoe UI,sans-serif}
+.top{background:#101d31;color:white;padding:24px}
+.wrap{max-width:1000px;margin:28px auto;padding:0 16px}
+.card{background:white;border:1px solid #dce4ef;border-radius:14px;padding:20px;margin-bottom:16px}
+input,button{font:inherit;padding:11px;border-radius:9px;border:1px solid #d6dfeb}
+input{display:block;width:100%;margin:8px 0 12px}
+button{background:#2f6fed;color:white;border:0;cursor:pointer}
+button.secondary{background:#536176}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.muted{color:#68758a;font-size:13px}
+.entry{border-top:1px solid #dce4ef;padding:20px 0}
+.report-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px}
+.report-head h3{margin:0;font-size:17px}
+.report-date{margin:4px 0 0;color:#68758a;font-size:12px}
+.report-topic{margin:10px 0 0;font-weight:700;color:#243a58}
+.tag{font-size:11px;background:#edf2fa;border-radius:20px;padding:5px 9px;white-space:nowrap}
+.report-section{margin-top:16px}
+.report-section h4{margin:0 0 8px;color:#536176;font-size:11px;text-transform:uppercase;letter-spacing:1px}
+.report-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px;margin:0}
+.report-field{padding:10px 0;border-top:1px solid #edf0f5;min-width:0}
+.report-field dt{font-size:11px;font-weight:700;color:#68758a;margin-bottom:3px}
+.report-field dd{margin:0;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.report-field.long{grid-column:1/-1}
+.portal-link{color:#d5e2f3;font-size:13px}
+.report-toggle{min-height:52px;padding:14px 20px;font-size:16px;font-weight:750;box-shadow:0 5px 14px #2f6fed30}
+.back-link{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:11px 16px;border-radius:9px;background:#536176;color:white;text-decoration:none;font-weight:650}
+.back-link:hover{background:#404c5d}
+.access-denied{border-left:4px solid #b42318}
+.error{color:#b42318}
+@media(max-width:600px){.report-head{flex-direction:column}.report-fields{grid-template-columns:1fr}.report-field.long{grid-column:auto}}
+</style>
+</head>
+<body>
+<header class="top"><strong>LOS SANTOS POLICE DEPARTMENT · INTERNAL AFFAIRS</strong><div>OFFICER'S VOICE — IA PORTAL</div></header>
+<main class="wrap">
+<section class="card" id="login">
+  <h2>IA Sign In</h2>
+  <p class="muted">Gunakan akun petugas IA yang dibuat oleh administrator Firebase. Pendaftaran publik tidak tersedia.</p>
+  <label for="email">Email</label><input id="email" type="email" autocomplete="username">
+  <label for="password">Password</label><input id="password" type="password" autocomplete="current-password">
+  <button id="loginBtn">Login</button>
+  <p class="error" id="loginError" role="alert"></p>
+  <p><a class="portal-link" href="index.html">Kembali ke formulir</a></p>
+</section>
+<section class="card access-denied" id="accessDenied" hidden>
+  <h2>Akses IA diperlukan</h2>
+  <p class="muted">Akun ini tidak termasuk dalam daftar petugas IA yang diizinkan membaca laporan.</p>
+  <button class="secondary" id="deniedLogoutBtn" type="button">Logout</button>
+</section>
+<section class="card" id="dashboard" hidden>
+  <div class="row">
+    <div><h2>Officer Voice Responses</h2><p class="muted" id="signedInAs">Akses khusus petugas IA.</p></div>
+    <div class="row">
+      <button class="report-toggle" id="toggleReports" type="button" aria-expanded="false" aria-controls="entries">Tampilkan laporan</button>
+      <a class="back-link" href="index.html">Kembali ke formulir</a>
+      <button class="secondary" id="logoutBtn" type="button">Logout</button>
+    </div>
+  </div>
+  <div id="entries" hidden></div>
+</section>
 </main>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script><script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
 const firebaseConfig={apiKey:'AIzaSyB1US25D07ixh9XLIZWbtcNoxBwzqQehq4',authDomain:'iadcurhat.firebaseapp.com',projectId:'iadcurhat',storageBucket:'iadcurhat.firebasestorage.app',messagingSenderId:'884507784413',appId:'1:884507784413:web:f7cd4bf09c70c362659734'};
 const configured=Object.values(firebaseConfig).every(value=>typeof value==='string'&&value.trim().length>0);
 const IA_EMAILS=new Set(['iakeren@gmail.com']);
@@ -13,6 +78,39 @@ const login=document.getElementById('login'),dash=document.getElementById('dashb
 let db,auth,unsubscribe=null,authorized=false;
 function stopListening(){if(unsubscribe){unsubscribe();unsubscribe=null;}}
 function closeReports(){stopListening();entries.hidden=true;entries.replaceChildren();toggleReports.textContent='Tampilkan laporan';toggleReports.setAttribute('aria-expanded','false');}
+function renderReport(data){
+	const article=document.createElement('article');article.className='entry';
+	const date=data.created_at?.toDate?data.created_at.toDate().toLocaleString('id-ID'):'Waktu tidak tersedia';
+	const header=document.createElement('header');header.className='report-head';
+	const summary=document.createElement('div');
+	const heading=document.createElement('h3');heading.textContent='Laporan Officer';
+	const timestamp=document.createElement('p');timestamp.className='report-date';timestamp.textContent=date;
+	summary.append(heading,timestamp);
+	if(data.topic){const topic=document.createElement('p');topic.className='report-topic';topic.textContent=data.topic;summary.append(topic);}
+	const badge=document.createElement('span');badge.className='tag';badge.textContent=data.identity_mode||'Mode tidak tersedia';
+	header.append(summary,badge);article.append(header);
+	const groups=[
+		['Identitas',[['Nama',data.officer_name],['Callsign',data.callsign],['Rank',data.rank],['Divisi',data.division]]],
+		['Konteks',[['Dampak terhadap tugas',data.impact],['Kenyamanan kerja (1–5)',data.comfort]]],
+		['Masukan & tindak lanjut',[['Cerita',data.story],['Saran untuk LSPD',data.improve],['Informasi tambahan',data.other],['Preferensi follow-up',data.follow_up_preference]]]
+	];
+	groups.forEach(([title,fields])=>{
+		const available=fields.filter(([,value])=>value!==null&&value!==undefined&&value!=='');
+		if(!available.length)return;
+		const section=document.createElement('section');section.className='report-section';
+		const sectionTitle=document.createElement('h4');sectionTitle.textContent=title;section.append(sectionTitle);
+		const list=document.createElement('dl');list.className='report-fields';
+		available.forEach(([label,value])=>{
+			const field=document.createElement('div');field.className='report-field';
+			if(['Cerita','Saran untuk LSPD','Informasi tambahan'].includes(label))field.classList.add('long');
+			const term=document.createElement('dt');term.textContent=label;
+			const description=document.createElement('dd');description.textContent=String(value);
+			field.append(term,description);list.append(field);
+		});
+		section.append(list);article.append(section);
+	});
+	return article;
+}
 function startListening(){
 	if(!authorized||!db)return;
 	entries.hidden=false;
@@ -22,17 +120,7 @@ function startListening(){
 	unsubscribe=db.collection('officer_voice_responses').orderBy('created_at','desc').onSnapshot(snap=>{
 		if(snap.empty){entries.textContent='Belum ada laporan.';return;}
 		entries.replaceChildren();
-		snap.forEach(doc=>{
-			const data=doc.data(),article=document.createElement('article');
-			article.className='entry';
-			const date=data.created_at?.toDate?data.created_at.toDate().toLocaleString('id-ID'):'Waktu tidak tersedia';
-			const heading=document.createElement('h3');
-			heading.textContent='Laporan · '+date+' ';
-			const tag=document.createElement('span');tag.className='tag';tag.textContent=data.identity_mode||'';heading.append(tag);article.append(heading);
-			const fields=[['Mode',data.identity_mode],['Nama',data.officer_name],['Callsign',data.callsign],['Rank',data.rank],['Divisi',data.division],['Topik',data.topic],['Cerita',data.story],['Dampak',data.impact],['Saran',data.improve],['Kenyamanan',data.comfort],['Lainnya',data.other],['Follow-up',data.follow_up_preference]];
-			fields.forEach(([label,value])=>{if(value!==null&&value!==undefined&&value!==''){const paragraph=document.createElement('p');paragraph.textContent=label+': '+value;article.append(paragraph);}});
-			entries.append(article);
-		});
+		snap.forEach(doc=>entries.append(renderReport(doc.data())));
 	},()=>{entries.textContent='Tidak dapat memuat data. Pastikan akun ini diizinkan di Firestore Rules.';});
 }
 if(configured){firebase.initializeApp(firebaseConfig);auth=firebase.auth();db=firebase.firestore();}else{err.textContent='Isi firebaseConfig terlebih dahulu sesuai README.';}
@@ -48,4 +136,6 @@ if(configured)auth.onAuthStateChanged(user=>{
 	dash.hidden=!authorized;
 	if(authorized){document.getElementById('signedInAs').textContent='Login sebagai '+user.email+'. Akses khusus petugas IA.';closeReports();}
 });
-</script></body></html>
+</script>
+</body>
+</html>
