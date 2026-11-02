@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isIA() {
+      return request.auth != null && request.auth.token.email in [
+        'iakeren@gmail.com'
+      ];
+    }
+    match /officer_voice_responses/{responseId} {
+      // Formulir publik boleh membuat dokumen, tetapi tidak boleh membaca/mengubah/menghapus.
+      allow create: if
+        request.resource.data.keys().hasOnly([
+          'identity_mode','officer_name','callsign','rank','division','topic',
+          'story','impact','improve','comfort','other','follow_up_preference','created_at'
+        ])
+        && request.resource.data.identity_mode in ['Anonymous','Identified']
+        && request.resource.data.topic is string
+        && request.resource.data.topic.size() > 0
+        && request.resource.data.topic.size() <= 100
+        && (request.resource.data.identity_mode == 'Identified' || (
+          request.resource.data.officer_name == null &&
+          request.resource.data.callsign == null &&
+          request.resource.data.rank == null &&
+          request.resource.data.division == null
+        ));
+      // Hanya akun IA yang dibuat manual oleh admin Firebase yang dapat membaca laporan.
+      allow read: if isIA();
+      allow update, delete: if false;
+    }
+  }
+}
+

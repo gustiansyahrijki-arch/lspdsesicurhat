@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101d31">
+<title>Officer's Voice | LSPD Internal Affairs</title>
+<style>
+:root{--navy:#101d31;--navy2:#172b46;--blue:#2f6fed;--ice:#eaf1fb;--ink:#182338;--muted:#68758a;--line:#dce4ef;--white:#fff;--gold:#d8b56d}
+*{box-sizing:border-box}
+body{margin:0;background:#f3f6fb;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}
+button,input,select,textarea{font:inherit}
+.hero{background:radial-gradient(circle at 85% 15%,#294a73 0,transparent 30%),linear-gradient(135deg,#0c1728,#1a3150);color:white;padding:38px 20px 76px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:310px;height:310px;border:1px solid #ffffff18;border-radius:50%;right:-90px;bottom:-190px;box-shadow:0 0 0 28px #ffffff08,0 0 0 58px #ffffff06}
+.wrap{width:min(780px,100% - 32px);margin:auto}
+.brand{display:flex;align-items:center;gap:13px}
+.crest{width:48px;height:48px;border:1px solid #ffffff55;border-radius:14px;display:grid;place-items:center;background:#ffffff12;color:#fff;font-weight:800;letter-spacing:-1px}
+.brand small{display:block;color:#c6d5e8;font-size:11px;letter-spacing:2px;font-weight:700}
+.brand strong{font-size:14px;letter-spacing:1px}
+.hero-copy{max-width:650px;margin:44px 0 0}
+.eyebrow{color:#e2c98e;font-size:11px;letter-spacing:2.4px;font-weight:800;text-transform:uppercase}
+h1{font-size:clamp(34px,7vw,56px);line-height:1.04;letter-spacing:-1.8px;margin:12px 0}
+.hero p{color:#d4dfed;max-width:590px;margin:14px 0 0;font-size:15px}
+.hero-foot{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.pill{border:1px solid #ffffff38;background:#ffffff0d;border-radius:999px;padding:7px 12px;font-size:11px;color:#e8eef7}
+main{margin-top:-40px;position:relative;padding-bottom:55px}
+.notice{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:0 10px 30px #1527440b;display:flex;gap:12px;align-items:flex-start;margin-bottom:18px}
+.notice-icon{width:30px;height:30px;border-radius:10px;background:var(--ice);color:var(--blue);display:grid;place-items:center;flex:none;font-weight:800}
+.notice p{margin:0;color:#536176;font-size:13px}
+form{display:grid;gap:16px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:0 10px 30px #15274408}
+.section-head{display:flex;gap:13px;align-items:flex-start;margin-bottom:20px}
+.num{width:34px;height:34px;border-radius:11px;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none}
+.section-head h2{font-size:17px;margin:0 0 3px;letter-spacing:-.2px}
+.section-head p{margin:0;color:var(--muted);font-size:12px}
+.field{margin-top:17px}
+label,.legend{display:block;font-size:13px;font-weight:700;margin-bottom:7px}
+.optional{font-weight:500;color:#8490a2;font-size:11px;margin-left:5px}
+input[type=text],input[type=email],select,textarea{width:100%;border:1px solid #d6dfeb;border-radius:11px;background:#fbfcfe;padding:12px 13px;color:var(--ink);outline:none;transition:.2s}
+textarea{min-height:112px;resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:#6b96ed;box-shadow:0 0 0 3px #2f6fed18;background:white}
+.hint{font-size:11px;color:#8490a2;margin:6px 0 0}
+.choices{display:grid;gap:9px}
+.choice{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:#fbfcfe;font-size:13px;cursor:pointer}
+.choice:hover{border-color:#9bb7ed;background:#f7faff}
+.choice input{margin-top:3px;accent-color:var(--blue)}
+.rating{display:flex;gap:9px;flex-wrap:wrap}
+.rating label{margin:0}
+.rating input{position:absolute;opacity:0;pointer-events:none}
+.rating span{display:grid;place-items:center;width:42px;height:40px;border:1px solid var(--line);border-radius:10px;cursor:pointer;font-size:13px;color:#56647a}
+.rating input:checked+span{background:var(--navy);color:white;border-color:var(--navy)}
+.checkline{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#536176}
+.checkline input{margin-top:4px;accent-color:var(--blue)}
+.actions{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.submit{border:0;border-radius:12px;background:var(--blue);color:white;font-weight:750;padding:13px 20px;cursor:pointer;box-shadow:0 7px 16px #2f6fed30}
+.submit:hover{background:#245ed0}
+.reset{border:0;background:transparent;color:#65738a;font-size:12px;text-decoration:underline;cursor:pointer;padding:10px}
+footer{text-align:center;color:#8994a5;font-size:11px;padding:0 20px 30px}
+footer strong{color:#59677c;letter-spacing:1px}
+#success{display:none;text-align:center;padding:34px 24px}
+.success-mark{width:54px;height:54px;border-radius:50%;background:#e8f7ef;color:#18864d;display:grid;place-items:center;font-size:25px;margin:0 auto 15px}
+#success h2{margin:0 0 8px}
+#success p{color:var(--muted);font-size:13px;max-width:440px;margin:0 auto 20px}
+.smallprint{font-size:11px;color:#8490a2;margin-top:12px}
+.form-error{color:#b42318;font-size:12px;margin:0}\n[hidden]{display:none!important}\n.submit:disabled{opacity:.65;cursor:wait}
+@media(max-width:560px){.hero{padding-top:25px}.hero-copy{margin-top:35px}.panel{padding:19px 16px}.wrap{width:min(100% - 22px,780px)}.actions{align-items:stretch}.submit{width:100%}.reset{width:100%}}
+</style>
+</head>
+<body>
+<header class="hero">
+ <div class="wrap">
+  <div class="brand"><div class="crest">IA</div><div><small>LOS SANTOS POLICE DEPARTMENT</small><strong>INTERNAL AFFAIRS DIVISION</strong></div></div>
+  <div class="hero-copy">
+  <div class="eyebrow">A space to be heard</div>
+   <h1>OFFICER'S<br>VOICE.</h1>
+   <p>Ruang bagi setiap officer untuk berbagi cerita, menyampaikan kendala, memberikan masukan, dan didengar dengan penuh rasa hormat.</p>
+   <div class="hero-foot"><span class="pill">COUNSELING SESSION</span><span class="pill">FEEDBACK &amp; CONCERNS</span><span class="pill">LSPD • INTERNAL</span></div>
+  </div>
+ </div>
+</header>
+<main class="wrap">
+ <div class="notice"><div class="notice-icon">i</div><p><strong id="modeTitle">Firebase belum dikonfigurasi</strong><br><span id="modeNotice">Website ini menggunakan GitHub Pages untuk hosting dan Firebase untuk menyimpan jawaban. Pengiriman aktif setelah konfigurasi Firebase dipasang. Jangan masukkan informasi sensitif yang tidak diperlukan. Formulir ini bukan pengganti prosedur pelaporan resmi untuk keadaan darurat atau pelanggaran serius.</span></p></div>
+ <form id="voiceForm">
+  <section class="panel">
+    <div class="section-head"><div class="num">01</div><div><h2>Officer Identification</h2><p>Pilih apakah kamu ingin menyampaikan masukan secara anonim atau dengan identitas.</p></div></div>
+    <div class="choices">
+     <label class="choice"><input type="radio" name="identity_mode" value="Anonymous" checked> <span><strong>Anonymous</strong><br><span class="hint">Nama, callsign, rank, dan divisi tidak diminta.</span></span></label>
+     <label class="choice"><input type="radio" name="identity_mode" value="Identified"> <span><strong>With Identity</strong><br><span class="hint">Kamu dapat mencantumkan identitas agar IA bisa memahami konteks laporan.</span></span></label>
+    </div>
+    <div id="identityFields" hidden>
+     <div class="field"><label for="name">Nama officer <span class="optional">Opsional</span></label><input id="name" name="officer_name" type="text" placeholder="Masukkan nama lengkap" disabled></div>
+     <div class="field"><label for="callsign">Callsign <span class="optional">Opsional</span></label><input id="callsign" name="callsign" type="text" placeholder="Contoh: 2-LINCOLN-14" disabled></div>
+     <div class="field"><label for="rank">Rank / Position <span class="optional">Opsional</span></label><select id="rank" name="rank" disabled><option value="">Pilih rank</option><option>ROOKIE</option><option>POLICE OFFICER II</option><option>POLICE OFFICER III</option><option>SERGEANT I</option><option>SERGEANT II</option><option>LIEUTENANT</option><option>CAPTAIN</option><option>COMMANDER</option><option>DEPUTY CHIEF OF POLICE</option><option>ASSISTANT CHIEF OF POLICE</option><option>CHIEF OF POLICE</option></select></div>
+     <div class="field"><label for="division">Division / Unit <span class="optional">Opsional</span></label><input id="division" name="division" type="text" placeholder="Nama divisi atau unit" disabled></div>
+    </div>
+   </section>
+  <section class="panel">
+   <div class="section-head"><div class="num">02</div><div><h2>How Can We Help?</h2><p>Pilih hal yang paling sesuai dengan tujuanmu mengisi formulir ini.</p></div></div>
+   <div class="choices">
+    <label class="choice"><input type="radio" name="topic" value="Personal counseling" required> <span>Personal counseling — ingin bercerita atau membutuhkan dukungan.</span></label>
+    <label class="choice"><input type="radio" name="topic" value="Work-related concerns"> <span>Work-related concerns — kendala atau tekanan selama bertugas.</span></label>
+    <label class="choice"><input type="radio" name="topic" value="Interpersonal conflict"> <span>Interpersonal conflict — permasalahan dengan rekan atau atasan.</span></label>
+    <label class="choice"><input type="radio" name="topic" value="Department feedback"> <span>Department feedback — kritik, saran, dan evaluasi untuk LSPD.</span></label>
+    <label class="choice"><input type="radio" name="topic" value="Other"> <span>Other — hal lain yang ingin disampaikan.</span></label>
+   </div>
+   <div class="field"><label for="story">Ceritakan apa yang ingin kamu sampaikan <span class="optional">Opsional</span></label><textarea id="story" name="story" placeholder="Kamu bisa mulai dari hal yang paling ingin kamu ceritakan. Tidak perlu terburu-buru..."></textarea></div>
+   <div class="field"><label>Apakah hal tersebut memengaruhi kenyamanan atau kinerjamu saat bertugas?</label><div class="choices">
+    <label class="choice"><input type="radio" name="impact" value="Yes"> <span>Ya</span></label>
+    <label class="choice"><input type="radio" name="impact" value="No"> <span>Tidak</span></label>
+    <label class="choice"><input type="radio" name="impact" value="Unsure"> <span>Belum yakin</span></label>
+    <label class="choice"><input type="radio" name="impact" value="Prefer not to say"> <span>Tidak ingin menjawab</span></label>
+   </div></div>
+  </section>
+  <section class="panel">
+   <div class="section-head"><div class="num">03</div><div><h2>Department Feedback</h2><p>Masukanmu dapat membantu membangun lingkungan kerja yang lebih baik.</p></div></div>
+   <div class="field"><label for="improve">Apa hal yang menurutmu perlu ditingkatkan di LSPD?</label><textarea id="improve" name="improve" placeholder="Tuliskan pendapat atau saranmu..."></textarea></div>
+   <div class="field"><label>Seberapa nyaman kamu dengan lingkungan kerja saat ini?</label><div class="rating">
+    <label><input type="radio" name="comfort" value="1"><span>1</span></label><label><input type="radio" name="comfort" value="2"><span>2</span></label><label><input type="radio" name="comfort" value="3"><span>3</span></label><label><input type="radio" name="comfort" value="4"><span>4</span></label><label><input type="radio" name="comfort" value="5"><span>5</span></label>
+   </div><p class="hint">1 = Sangat tidak nyaman · 5 = Sangat nyaman</p></div>
+   <div class="field"><label for="other">Apakah ada hal lain yang ingin diketahui Internal Affairs?</label><textarea id="other" name="other" placeholder="(Opsional)"></textarea></div>
+  </section>
+  <section class="panel">
+   <div class="section-head"><div class="num">04</div><div><h2>Privacy & Follow-up</h2><p>Tentukan bagaimana Internal Affairs dapat menindaklanjuti masukanmu.</p></div></div>
+   <div class="choices">
+    <label class="choice"><input type="radio" name="identity" value="May contact me" checked> <span>Saya bersedia dihubungi apabila diperlukan klarifikasi lebih lanjut.</span></label>
+    <label class="choice"><input type="radio" name="identity" value="Prefer not to be contacted"> <span>Saya memilih untuk tidak dihubungi lebih lanjut.</span></label>
+   </div>
+   <p class="smallprint" id="privacyNote">Mode Anonymous tidak mengirim nama, callsign, rank, atau divisi ke database. Jawaban hanya dapat dibaca oleh petugas IA yang sudah login. Jangan menuliskan detail yang dapat mengungkap identitasmu jika ingin tetap anonim.</p>
+   <div class="field"><label class="checkline"><input type="checkbox" id="consent" name="consent" value="yes" required><span>Saya memahami tujuan formulir ini dan menyetujui informasi yang saya berikan digunakan untuk keperluan komunikasi serta evaluasi internal LSPD.</span></label></div>
+   <div class="field" id="turnstileField" hidden><div id="turnstileWidget"></div><p class="hint">Verifikasi ini membantu mengurangi kiriman otomatis.</p></div>
+  </section>
+  <section class="panel">
+   <p class="form-error" id="formError" role="alert" hidden></p><div class="actions"><button class="reset" type="reset">Bersihkan jawaban</button><button class="submit" type="submit">Kirim pernyataan <span aria-hidden="true">→</span></button></div>
+  </section>
+ </form>
+ <section class="panel" id="success" aria-live="polite"><div class="success-mark">✓</div><h2>Thank you, Officer.</h2><p>Suaramu berarti. Terima kasih telah meluangkan waktu untuk berbagi dan membantu membangun LSPD yang lebih baik.</p><strong>INTERNAL AFFAIRS DIVISION</strong><p class="smallprint" id="successMessage">Ini hanya konfirmasi demo. Jawaban belum dikirim atau disimpan.</p><button class="submit" id="backToForm" type="button">Kembali ke formulir</button></section>
+</main>
+<footer><strong>LOS SANTOS POLICE DEPARTMENT</strong><br>INTERNAL AFFAIRS DIVISION · OFFICER'S VOICE<br><span>Integrity · Accountability · Professionalism</span></footer>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
+// Isi konfigurasi dari Firebase Console > Project settings > Your apps.
+// Firebase web config boleh berada di frontend; keamanan data diatur oleh firestore.rules.
+const firebaseConfig = {
+  apiKey: "AIzaSyB1US25D07ixh9XLIZWbtcNoxBwzqQehq4",
+  authDomain: "iadcurhat.firebaseapp.com",
+  projectId: "iadcurhat",
+  storageBucket: "iadcurhat.firebasestorage.app",
+  messagingSenderId: "884507784413",
+  appId: "1:884507784413:web:f7cd4bf09c70c362659734"
+};
+
+const voiceForm = document.getElementById('voiceForm');
+const successPanel = document.getElementById('success');
+const formError = document.getElementById('formError');
+const identityFields = document.getElementById('identityFields');
+const configured = firebaseConfig.apiKey !== 'AIzaSyB1US25D07ixh9XLIZWbtcNoxBwzqQehq4' && firebaseConfig.projectId !== 'iadcurhat';
+let db = null;
+if (configured) {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore();
+  document.getElementById('modeTitle').textContent = 'Pengiriman formulir siap';
+  document.getElementById('modeNotice').textContent = 'Jawaban akan disimpan secara aman melalui Firebase. Mode anonim tidak mengirim data identitas. Hanya petugas IA yang memiliki akun resmi dapat membaca laporan.';
+} else {
+  document.getElementById('modeTitle').textContent = 'Firebase belum dikonfigurasi';
+}
+function updateIdentityFields() {
+  const identified = document.querySelector('input[name="identity_mode"]:checked')?.value === 'Identified';
+  identityFields.hidden = !identified;
+  identityFields.querySelectorAll('input, select').forEach((field) => {
+    field.disabled = !identified;
+    if (!identified) field.value = '';
+  });
+}
+document.querySelectorAll('input[name="identity_mode"]').forEach(r => r.addEventListener('change', updateIdentityFields));
+updateIdentityFields();
+function getFormPayload() {
+  const data = new FormData(voiceForm);
+  const mode = data.get('identity_mode') === 'Identified' ? 'Identified' : 'Anonymous';
+  return {
+    identity_mode: mode,
+    officer_name: mode === 'Identified' ? (data.get('officer_name') || null) : null,
+    callsign: mode === 'Identified' ? (data.get('callsign') || null) : null,
+    rank: mode === 'Identified' ? (data.get('rank') || null) : null,
+    division: mode === 'Identified' ? (data.get('division') || null) : null,
+    topic: data.get('topic'), story: data.get('story') || null,
+    impact: data.get('impact') || null, improve: data.get('improve') || null,
+    comfort: data.get('comfort') ? Number(data.get('comfort')) : null,
+    other: data.get('other') || null,
+    follow_up_preference: data.get('identity') || 'May contact me',
+    created_at: firebase.firestore.FieldValue.serverTimestamp()
+  };
+}
+voiceForm.addEventListener('submit', async (e) => {
+  e.preventDefault(); formError.hidden = true;
+  if (!voiceForm.reportValidity()) return;
+  if (!configured || !db) {
+    formError.textContent = 'Formulir belum aktif. Lengkapi firebaseConfig di index.html sesuai panduan setup.';
+    formError.hidden = false; return;
+  }
+  const btn = voiceForm.querySelector('.submit'); btn.disabled = true; btn.textContent = 'Mengirim...';
+  try {
+    await db.collection('officer_voice_responses').add(getFormPayload());
+    voiceForm.style.display = 'none'; successPanel.style.display = 'block';
+    document.getElementById('successMessage').textContent = 'Jawaban berhasil dikirim. Terima kasih telah menyampaikan suaramu kepada Internal Affairs.';
+    window.scrollTo({top:0,behavior:'smooth'});
+  } catch (err) {
+    console.error(err); formError.textContent = 'Pengiriman gagal. Periksa konfigurasi Firebase dan Firestore Rules, lalu coba kembali.';
+    formError.hidden = false; btn.disabled = false; btn.innerHTML = 'Kirim pernyataan <span aria-hidden="true">→</span>';
+  }
+});
+document.getElementById('backToForm').addEventListener('click', () => {
+  successPanel.style.display='none'; voiceForm.reset(); updateIdentityFields(); formError.hidden=true;
+  voiceForm.style.display='grid'; const btn=voiceForm.querySelector('.submit'); btn.disabled=false;
+  btn.innerHTML='Kirim pernyataan <span aria-hidden="true">→</span>'; window.scrollTo({top:0,behavior:'smooth'});
+});
+</script>
+</body>
+</html>
