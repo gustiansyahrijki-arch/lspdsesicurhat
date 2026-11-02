@@ -62,7 +62,9 @@ footer strong{color:#59677c;letter-spacing:1px}
 #success h2{margin:0 0 8px}
 #success p{color:var(--muted);font-size:13px;max-width:440px;margin:0 auto 20px}
 .smallprint{font-size:11px;color:#8490a2;margin-top:12px}
-.form-error{color:#b42318;font-size:12px;margin:0}\n[hidden]{display:none!important}\n.submit:disabled{opacity:.65;cursor:wait}
+.form-error{color:#b42318;font-size:12px;margin:0}
+[hidden]{display:none!important}
+.submit:disabled{opacity:.65;cursor:wait}
 @media(max-width:560px){.hero{padding-top:25px}.hero-copy{margin-top:35px}.panel{padding:19px 16px}.wrap{width:min(100% - 22px,780px)}.actions{align-items:stretch}.submit{width:100%}.reset{width:100%}}
 </style>
 </head>
@@ -154,7 +156,7 @@ const voiceForm = document.getElementById('voiceForm');
 const successPanel = document.getElementById('success');
 const formError = document.getElementById('formError');
 const identityFields = document.getElementById('identityFields');
-const configured = firebaseConfig.apiKey !== 'AIzaSyB1US25D07ixh9XLIZWbtcNoxBwzqQehq4' && firebaseConfig.projectId !== 'iadcurhat';
+const configured = Object.values(firebaseConfig).every(value => typeof value === 'string' && value.trim().length > 0);
 let db = null;
 if (configured) {
   firebase.initializeApp(firebaseConfig);

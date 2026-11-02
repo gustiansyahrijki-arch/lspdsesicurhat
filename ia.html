@@ -6,7 +6,7 @@
 </main>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script><script>
 const firebaseConfig={apiKey:'AIzaSyB1US25D07ixh9XLIZWbtcNoxBwzqQehq4',authDomain:'iadcurhat.firebaseapp.com',projectId:'iadcurhat',storageBucket:'iadcurhat.firebasestorage.app',messagingSenderId:'884507784413',appId:'1:884507784413:web:f7cd4bf09c70c362659734'};
-const configured=firebaseConfig.apiKey!=='AIzaSyB1US25D07ixh9XLIZWbtcNoxBwzqQehq4'&&firebaseConfig.projectId!=='iadcurhat';
+const configured=Object.values(firebaseConfig).every(value=>typeof value==='string'&&value.trim().length>0);
 const login=document.getElementById('login'),dash=document.getElementById('dashboard'),err=document.getElementById('loginError'),entries=document.getElementById('entries');let db,auth,unsubscribe=null;
 if(configured){firebase.initializeApp(firebaseConfig);auth=firebase.auth();db=firebase.firestore();}else{err.textContent='Isi firebaseConfig terlebih dahulu sesuai README.';}
 document.getElementById('loginBtn').onclick=async()=>{err.textContent='';try{await auth.signInWithEmailAndPassword(document.getElementById('email').value,document.getElementById('password').value);}catch(e){err.textContent='Login gagal. Periksa email dan password.';}};
