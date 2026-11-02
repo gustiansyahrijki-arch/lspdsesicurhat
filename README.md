@@ -13,11 +13,11 @@ Paket ini mengganti Supabase dengan Firebase. Hosting tetap GitHub Pages. Tidak 
 2. Di halaman project, klik ikon Web `</>` untuk menambahkan Web App. Beri nama `Officer's Voice`, lalu Register app. Tidak perlu mengaktifkan Firebase Hosting.
 3. Firebase akan menampilkan `firebaseConfig`. Salin nilai `apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId`, dan `appId`.
 4. Konfigurasi Firebase project `iadcurhat` sudah diisikan ke `index.html` dan `ia.html`. Tidak perlu mengedit `firebaseConfig` lagi. Jangan menaruh password atau private key di file website.
-5. Di `firestore.rules`, ganti `GANTI_DENGAN_EMAIL_IA@contoh.com` dengan email akun IA yang akan diberi akses (boleh masukkan beberapa email, pisahkan dengan koma). Setelah itu, di Firebase Console → Build → Firestore Database → Create database. Pilih production mode dan lokasi yang sesuai. Buka tab Rules, ganti seluruh isi dengan file rules yang sudah diedit, lalu Publish.
+5. Tambahkan email petugas IA ke allowlist `isIA()` di `firestore.rules` dan daftar `IA_EMAILS` di `ia.html`; keduanya harus cocok. Setelah itu, di Firebase Console → Build → Firestore Database → Create database. Pilih production mode dan lokasi yang sesuai. Buka tab Rules, ganti seluruh isi dengan file rules yang sudah diedit, lalu Publish.
 6. Di Firebase Console → Build → Authentication → Get started → Sign-in method, aktifkan **Email/Password**. Jangan aktifkan pendaftaran publik di website.
 7. Di Authentication → Users → Add user, buat akun email/password untuk petugas IA yang dipercaya. Buat satu akun bersama hanya jika memang diperlukan; akun per petugas lebih mudah diaudit. Jangan bagikan akun ke officer umum.
 8. Upload `index.html` dan `ia.html` ke root repository GitHub yang sama. Aktifkan GitHub Pages dari Settings → Pages → Deploy from a branch → `main` → `/ (root)`.
-9. Formulir publik ada di URL GitHub Pages utama. Portal IA ada di `.../ia.html`.
+9. Formulir publik ada di URL GitHub Pages utama. Petugas IA membuka `.../ia.html`, login memakai akun allowlist, lalu tekan **Tampilkan laporan** untuk melihat jawaban.
 
 ## Perilaku & keamanan
 - Formulir publik hanya boleh membuat laporan baru.

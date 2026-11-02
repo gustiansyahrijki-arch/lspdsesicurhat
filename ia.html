@@ -1,15 +1,51 @@
 <!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IA Portal | Officer's Voice</title><style>
-*{box-sizing:border-box}body{margin:0;background:#f3f6fb;color:#182338;font-family:system-ui,Segoe UI,sans-serif}.top{background:#101d31;color:white;padding:24px}.wrap{max-width:1000px;margin:28px auto;padding:0 16px}.card{background:white;border:1px solid #dce4ef;border-radius:14px;padding:20px;margin-bottom:16px}input,button{font:inherit;padding:11px;border-radius:9px;border:1px solid #d6dfeb}input{display:block;width:100%;margin:8px 0 12px}button{background:#2f6fed;color:white;border:0;cursor:pointer}button.secondary{background:#536176}.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.muted{color:#68758a;font-size:13px}.entry{border-top:1px solid #e5eaf1;padding:15px 0}.entry h3{margin:0 0 8px}.entry p{white-space:pre-wrap;margin:5px 0}.error{color:#b42318}.tag{font-size:11px;background:#edf2fa;border-radius:20px;padding:4px 8px}</style></head><body>
+*{box-sizing:border-box}body{margin:0;background:#f3f6fb;color:#182338;font-family:system-ui,Segoe UI,sans-serif}.top{background:#101d31;color:white;padding:24px}.wrap{max-width:1000px;margin:28px auto;padding:0 16px}.card{background:white;border:1px solid #dce4ef;border-radius:14px;padding:20px;margin-bottom:16px}input,button{font:inherit;padding:11px;border-radius:9px;border:1px solid #d6dfeb}input{display:block;width:100%;margin:8px 0 12px}button{background:#2f6fed;color:white;border:0;cursor:pointer}button.secondary{background:#536176}.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.muted{color:#68758a;font-size:13px}.entry{border-top:1px solid #e5eaf1;padding:15px 0}.entry h3{margin:0 0 8px}.entry p{white-space:pre-wrap;margin:5px 0}.error{color:#b42318}.tag{font-size:11px;background:#edf2fa;border-radius:20px;padding:4px 8px}.portal-link{color:#d5e2f3;font-size:13px}.report-toggle{min-height:52px;padding:14px 20px;font-size:16px;font-weight:750;box-shadow:0 5px 14px #2f6fed30}.access-denied{border-left:4px solid #b42318}</style></head><body>
 <header class="top"><strong>LOS SANTOS POLICE DEPARTMENT · INTERNAL AFFAIRS</strong><div>OFFICER'S VOICE — IA PORTAL</div></header><main class="wrap">
-<section class="card" id="login"><h2>IA Sign In</h2><p class="muted">Gunakan akun petugas IA yang dibuat oleh administrator Firebase. Pendaftaran publik tidak tersedia.</p><label>Email</label><input id="email" type="email" autocomplete="username"><label>Password</label><input id="password" type="password" autocomplete="current-password"><button id="loginBtn">Login</button><p class="error" id="loginError"></p></section>
-<section class="card" id="dashboard" hidden><div class="row"><div><h2>Officer Voice Responses</h2><p class="muted">Data hanya terlihat setelah login IA.</p></div><button class="secondary" id="logoutBtn">Logout</button></div><div id="entries">Memuat laporan...</div></section>
+<section class="card" id="login"><h2>IA Sign In</h2><p class="muted">Gunakan akun petugas IA yang dibuat oleh administrator Firebase. Pendaftaran publik tidak tersedia.</p><label for="email">Email</label><input id="email" type="email" autocomplete="username"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password"><button id="loginBtn">Login</button><p class="error" id="loginError" role="alert"></p><p><a class="portal-link" href="index.html">Kembali ke formulir</a></p></section>
+<section class="card access-denied" id="accessDenied" hidden><h2>Akses IA diperlukan</h2><p class="muted">Akun ini tidak termasuk dalam daftar petugas IA yang diizinkan membaca laporan.</p><button class="secondary" id="deniedLogoutBtn" type="button">Logout</button></section>
+<section class="card" id="dashboard" hidden><div class="row"><div><h2>Officer Voice Responses</h2><p class="muted" id="signedInAs">Akses khusus petugas IA.</p></div><div class="row"><button class="report-toggle" id="toggleReports" type="button" aria-expanded="false" aria-controls="entries">Tampilkan laporan</button><button class="secondary" id="logoutBtn" type="button">Logout</button></div></div><div id="entries" hidden></div></section>
 </main>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script><script>
 const firebaseConfig={apiKey:'AIzaSyB1US25D07ixh9XLIZWbtcNoxBwzqQehq4',authDomain:'iadcurhat.firebaseapp.com',projectId:'iadcurhat',storageBucket:'iadcurhat.firebasestorage.app',messagingSenderId:'884507784413',appId:'1:884507784413:web:f7cd4bf09c70c362659734'};
 const configured=Object.values(firebaseConfig).every(value=>typeof value==='string'&&value.trim().length>0);
-const login=document.getElementById('login'),dash=document.getElementById('dashboard'),err=document.getElementById('loginError'),entries=document.getElementById('entries');let db,auth,unsubscribe=null;
+const IA_EMAILS=new Set(['iakeren@gmail.com']);
+const login=document.getElementById('login'),dash=document.getElementById('dashboard'),denied=document.getElementById('accessDenied'),err=document.getElementById('loginError'),entries=document.getElementById('entries'),toggleReports=document.getElementById('toggleReports');
+let db,auth,unsubscribe=null,authorized=false;
+function stopListening(){if(unsubscribe){unsubscribe();unsubscribe=null;}}
+function closeReports(){stopListening();entries.hidden=true;entries.replaceChildren();toggleReports.textContent='Tampilkan laporan';toggleReports.setAttribute('aria-expanded','false');}
+function startListening(){
+	if(!authorized||!db)return;
+	entries.hidden=false;
+	entries.textContent='Memuat laporan...';
+	toggleReports.textContent='Sembunyikan laporan';
+	toggleReports.setAttribute('aria-expanded','true');
+	unsubscribe=db.collection('officer_voice_responses').orderBy('created_at','desc').onSnapshot(snap=>{
+		if(snap.empty){entries.textContent='Belum ada laporan.';return;}
+		entries.replaceChildren();
+		snap.forEach(doc=>{
+			const data=doc.data(),article=document.createElement('article');
+			article.className='entry';
+			const date=data.created_at?.toDate?data.created_at.toDate().toLocaleString('id-ID'):'Waktu tidak tersedia';
+			const heading=document.createElement('h3');
+			heading.textContent='Laporan · '+date+' ';
+			const tag=document.createElement('span');tag.className='tag';tag.textContent=data.identity_mode||'';heading.append(tag);article.append(heading);
+			const fields=[['Mode',data.identity_mode],['Nama',data.officer_name],['Callsign',data.callsign],['Rank',data.rank],['Divisi',data.division],['Topik',data.topic],['Cerita',data.story],['Dampak',data.impact],['Saran',data.improve],['Kenyamanan',data.comfort],['Lainnya',data.other],['Follow-up',data.follow_up_preference]];
+			fields.forEach(([label,value])=>{if(value!==null&&value!==undefined&&value!==''){const paragraph=document.createElement('p');paragraph.textContent=label+': '+value;article.append(paragraph);}});
+			entries.append(article);
+		});
+	},()=>{entries.textContent='Tidak dapat memuat data. Pastikan akun ini diizinkan di Firestore Rules.';});
+}
 if(configured){firebase.initializeApp(firebaseConfig);auth=firebase.auth();db=firebase.firestore();}else{err.textContent='Isi firebaseConfig terlebih dahulu sesuai README.';}
-document.getElementById('loginBtn').onclick=async()=>{err.textContent='';try{await auth.signInWithEmailAndPassword(document.getElementById('email').value,document.getElementById('password').value);}catch(e){err.textContent='Login gagal. Periksa email dan password.';}};
-document.getElementById('logoutBtn').onclick=()=>auth.signOut();
-if(configured)auth.onAuthStateChanged(user=>{login.hidden=!!user;dash.hidden=!user;if(unsubscribe){unsubscribe();unsubscribe=null;}if(user){entries.textContent='Memuat laporan...';unsubscribe=db.collection('officer_voice_responses').orderBy('created_at','desc').onSnapshot(snap=>{if(snap.empty){entries.textContent='Belum ada laporan.';return;}entries.innerHTML='';snap.forEach(doc=>{const d=doc.data(),el=document.createElement('article');el.className='entry';const date=d.created_at?.toDate?d.created_at.toDate().toLocaleString('id-ID'):'Waktu tidak tersedia';const fields=[['Mode',d.identity_mode],['Nama',d.officer_name],['Callsign',d.callsign],['Rank',d.rank],['Divisi',d.division],['Topik',d.topic],['Cerita',d.story],['Dampak',d.impact],['Saran',d.improve],['Kenyamanan',d.comfort],['Lainnya',d.other],['Follow-up',d.follow_up_preference]];const h=document.createElement('h3');h.textContent='Laporan · '+date+' ';const tag=document.createElement('span');tag.className='tag';tag.textContent=d.identity_mode||'';h.append(tag);el.append(h);fields.forEach(([k,v])=>{if(v!==null&&v!==undefined&&v!==''){const p=document.createElement('p');p.textContent=k+': '+v;el.append(p);}});entries.append(el);});},()=>{entries.textContent='Tidak dapat memuat data. Pastikan Firestore Rules sudah dipasang.';});}});
+document.getElementById('loginBtn').onclick=async()=>{if(!auth)return;err.textContent='';try{await auth.signInWithEmailAndPassword(document.getElementById('email').value,document.getElementById('password').value);}catch(error){err.textContent='Login gagal. Periksa email dan password.';}};
+document.getElementById('logoutBtn').onclick=()=>auth?.signOut();
+document.getElementById('deniedLogoutBtn').onclick=()=>auth?.signOut();
+toggleReports.addEventListener('click',()=>{if(entries.hidden)startListening();else closeReports();});
+if(configured)auth.onAuthStateChanged(user=>{
+	stopListening();
+	authorized=!!user&&IA_EMAILS.has((user.email||'').toLowerCase());
+	login.hidden=!!user;
+	denied.hidden=!user||authorized;
+	dash.hidden=!authorized;
+	if(authorized){document.getElementById('signedInAs').textContent='Login sebagai '+user.email+'. Akses khusus petugas IA.';closeReports();}
+});
 </script></body></html>

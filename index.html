@@ -13,7 +13,10 @@ button,input,select,textarea{font:inherit}
 .hero{background:radial-gradient(circle at 85% 15%,#294a73 0,transparent 30%),linear-gradient(135deg,#0c1728,#1a3150);color:white;padding:38px 20px 76px;position:relative;overflow:hidden}
 .hero:after{content:"";position:absolute;width:310px;height:310px;border:1px solid #ffffff18;border-radius:50%;right:-90px;bottom:-190px;box-shadow:0 0 0 28px #ffffff08,0 0 0 58px #ffffff06}
 .wrap{width:min(780px,100% - 32px);margin:auto}
-.brand{display:flex;align-items:center;gap:13px}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:13px}
+.brand>div:nth-child(2){flex:1;min-width:0}
+.portal-link{flex:none;border:1px solid #ffffff70;border-radius:10px;padding:10px 14px;color:#fff;text-decoration:none;font-size:13px;font-weight:700;background:#ffffff0d}
+.portal-link:hover{background:#ffffff1a;border-color:#ffffffaa}
 .crest{width:48px;height:48px;border:1px solid #ffffff55;border-radius:14px;display:grid;place-items:center;background:#ffffff12;color:#fff;font-weight:800;letter-spacing:-1px}
 .brand small{display:block;color:#c6d5e8;font-size:11px;letter-spacing:2px;font-weight:700}
 .brand strong{font-size:14px;letter-spacing:1px}
@@ -65,13 +68,13 @@ footer strong{color:#59677c;letter-spacing:1px}
 .form-error{color:#b42318;font-size:12px;margin:0}
 [hidden]{display:none!important}
 .submit:disabled{opacity:.65;cursor:wait}
-@media(max-width:560px){.hero{padding-top:25px}.hero-copy{margin-top:35px}.panel{padding:19px 16px}.wrap{width:min(100% - 22px,780px)}.actions{align-items:stretch}.submit{width:100%}.reset{width:100%}}
+@media(max-width:560px){.hero{padding-top:25px}.hero-copy{margin-top:35px}.panel{padding:19px 16px}.wrap{width:min(100% - 22px,780px)}.brand{gap:9px}.portal-link{padding:8px 10px;font-size:12px;white-space:nowrap}.actions{align-items:stretch}.submit{width:100%}.reset{width:100%}}
 </style>
 </head>
 <body>
 <header class="hero">
  <div class="wrap">
-  <div class="brand"><div class="crest">IA</div><div><small>LOS SANTOS POLICE DEPARTMENT</small><strong>INTERNAL AFFAIRS DIVISION</strong></div></div>
+  <div class="brand"><div class="crest">IA</div><div><small>LOS SANTOS POLICE DEPARTMENT</small><strong>INTERNAL AFFAIRS DIVISION</strong></div><a class="portal-link" href="ia.html">Portal IA</a></div>
   <div class="hero-copy">
   <div class="eyebrow">A space to be heard</div>
    <h1>OFFICER'S<br>VOICE.</h1>
