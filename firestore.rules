@@ -23,9 +23,10 @@ service cloud.firestore {
           request.resource.data.rank == null &&
           request.resource.data.division == null
         ));
-      // Hanya akun IA yang dibuat manual oleh admin Firebase yang dapat membaca laporan.
+      // Hanya akun IA yang dibuat manual oleh admin Firebase yang dapat membaca dan menghapus laporan.
       allow read: if isIA();
-      allow update, delete: if false;
+      allow delete: if isIA();
+      allow update: if false;
     }
   }
 }
